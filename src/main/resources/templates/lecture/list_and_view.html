@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/common :: head('LECTURE')">
+
+    <!-- Fragments -->
+
+</head>
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+
+<style>
+    @page {size:21cm 29.7cm;margin: 15px}
+    @media print{
+        #header, #sidebarMenu, #comments, #print-btn {display:none}
+        /* .contents {padding:0} */
+    }
+</style>
+
+<body>
+
+    <nav id="header" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('lecture')">
+
+        <!-- Fragments -->
+
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+                th:replace="fragments/common :: side-menu('0')">
+
+                <!-- Fragment -->
+
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 th:text="${lecture.title}" class="h2">소개</h1>
+                    <div class="d-flex justify-content-end text-muted">
+                        <span>작성일:</span><span th:text="${created_date}"></span>
+                        <span>, 수정일:</span><span th:text="${modified_date}"></span>
+                        <span>, 조회수:</span><span th:text="${lecture.view_count}"></span>
+                    </div>
+                </div>
+
+                <div class="pb-3">
+                    <a th:href="@{/lecture/update(id=${lecture.id})}" sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="btn btn-primary my-2 my-sm-0 ml-1" type="button">수정</a>
+                </div>
+
+                <pre style="font-size: 17px; padding: 5px;" th:text="${lecture.content}" class="mb-5">
+
+                    <!-- From DataBase -->
+
+                </pre>
+
+                <a href="javascript:window.print();" id="print-btn" class="btn btn-success">인쇄</a>
+                
+                <div id="comments" class="border-top pt-4 mt-2" >
+                    <h4>Comments</h4>
+                    <form th:action="@{/lecture/list_and_view(lectureId=${lecture.id})}" method="post">
+                        <div class="form-group mb-1">
+                            <textarea name="comment" class="form-control" id="exampleFormControlTextarea1" rows="2"
+                                placeholder="코멘트를 입력하세요."></textarea>
+                        </div>
+                        <button class="btn btn-secondary my-sm-0" type="submit">작성</button>
+                    </form>
+
+                    <ul class="list-unstyled my-4">
+                        <li th:each="comment : ${comments}" th:if="${comment.lecture.id == lecture.id}"
+                            class="bg-light p-3 my-1" th:classappend="${comment.comment_num} != '0' ? 'p-1 ml-4'">
+                            <div>
+                                <span th:if="${comment.comment_num} != '0'" th:text="'↳ '"></span><strong
+                                    th:text="${comment.user.username}" class="mr-1">아이디</strong><span
+                                    th:text="${comment.created_date}" class="text-muted small">날짜</span>
+                            </div>
+                            <p th:text="${comment.comment}">코멘트내용</p>
+                            <form th:classappend="${comment.comment_num} != '0' ? 'd-none'"
+                                th:action="@{/lecture/list_and_view(lectureId=${lecture.id}, comment_id=${comment.id})}"
+                                method="post">
+                                <div class="form-group mb-1 d-flex">
+                                    <textarea name="comment" class="form-control w-75" id="exampleFormControlTextarea1"
+                                        rows="1" placeholder="코멘트를 입력하세요."></textarea>
+                                    <button class="btn btn-secondary my-sm-0 ml-1" type="submit">작성</button>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>
