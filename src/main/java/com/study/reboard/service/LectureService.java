@@ -1,5 +1,6 @@
 package com.study.reboard.service;
 
+import com.study.reboard.entity.BaseEntity;
 import com.study.reboard.entity.Lecture;
 import com.study.reboard.entity.User;
 import com.study.reboard.repository.LectureRepository;
@@ -32,7 +33,9 @@ public class LectureService {
     public Lecture lectureWrite(Lecture lecture, String username) {
         User user = userRepository.findByUsername(username);
         lecture.setUser(user);
+        lecture.setTitle(lecture.getTitle());
         lecture.setContent(lecture.getContent());
+
         return lectureRepository.save(lecture);
     }
 }

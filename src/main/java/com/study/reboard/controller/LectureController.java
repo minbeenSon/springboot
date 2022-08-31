@@ -75,6 +75,9 @@ public class LectureController {
     @PostMapping("/write/process")
     public String lectureWriteProcess(Lecture lecture, Authentication authentication, Model model) {
         String username = authentication.getName();
+        lecture.setCreated_date(LocalDateTime.now());
+        lecture.setModified_date(LocalDateTime.now());
+        lecture.setView_count(0);
 
         lectureService.lectureWrite(lecture,username);
 
@@ -95,6 +98,7 @@ public class LectureController {
         Lecture lectureTemp = lectureService.lectureDetail(id);
         lectureTemp.setTitle(lecture.getTitle());
         lectureTemp.setContent(lecture.getContent());
+        lectureTemp.setModified_date(LocalDateTime.now());
         String username = authentication.getName();
 
         lectureService.lectureWrite(lectureTemp, username);
